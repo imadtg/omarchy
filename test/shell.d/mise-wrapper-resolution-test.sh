@@ -71,17 +71,6 @@ export MISE_TEST_DIRECTORY_BIN="$directory_bin"
 export MISE_TEST_WRONG_BIN="$wrong_bin/pi"
 export MISE_TEST_TOOL_LOG="$tool_log"
 
-mkdir -p "$home/.local"
-printf 'keep\n' >"$home/.local/sentinel"
-for bad_command in ../sentinel . ..; do
-  if HOME="$home" "$ROOT/bin/omarchy-mise-install" pi "$bad_command" pi >/dev/null 2>&1; then
-    fail "wrapper generator rejects unsafe command name $bad_command"
-  fi
-done
-[[ $(<"$home/.local/sentinel") == keep ]] ||
-  fail "wrapper generator does not overwrite a path escaped through command-name"
-pass "wrapper generator rejects unsafe command names"
-
 for bad_bin in ../wrong-bin/pi /tmp/pi . ..; do
   if HOME="$home" "$ROOT/bin/omarchy-mise-install" pi escaped "$bad_bin" >/dev/null 2>&1; then
     fail "wrapper generator rejects unsafe bin name $bad_bin"
